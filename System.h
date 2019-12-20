@@ -2,6 +2,8 @@
 #define SYSTEM_H
 
 #include <SDL.h>
+#include <SDL_mixer.h>
+
 class System
 {
 public:
@@ -10,6 +12,7 @@ public:
 
 	SDL_Window* win;
 	SDL_Renderer* ren;
+	
 };
 
 extern System sys;
