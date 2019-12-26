@@ -12,10 +12,12 @@ public:
 	virtual void spaceBar(int nuberOfMissiles) {}
 	virtual void leftButton() {}
 	virtual void rightButton() {}
-	virtual void draw() const = 0;
+	virtual void upButton() {}
+	virtual void downButton() {}
+	virtual void draw(int score) = 0;
 	SDL_Rect getRect() const { return rect; }
-	virtual void tick(const std::vector<std::shared_ptr<Sprite>> &sprites) = 0;
-	virtual void collisionDetection() {}
+	virtual int tick(const std::vector<std::shared_ptr<Sprite>>& sprites) = 0;
+	virtual int hit() { return -1; }
 	virtual ~Sprite() {}
 
 protected:
@@ -23,7 +25,7 @@ protected:
 	SDL_Rect rect;
 
 private:
-
+	Sprite(const Sprite& other) = delete;
 	const Sprite& operator = (const Sprite& other) = delete;
 };
 

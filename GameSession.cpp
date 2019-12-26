@@ -28,9 +28,18 @@ void GameSession::removeMissile(std::shared_ptr<Sprite> sprite) {
 	removedMissile.push_back(sprite);
 }
 
+void GameSession::addShield(std::shared_ptr<Sprite> sprite) {
+	addedShields.push_back(sprite);
+}
+
+void GameSession::removeShield(std::shared_ptr<Sprite> sprite) {
+	removedShields.push_back(sprite);
+}
+
 void GameSession::run() {
 	bool quit = false;
 	Uint32 tickInterval = 1000 / FPS;
+	score = 0;
 
 	while (!quit) {
 		Uint32 nextTick = SDL_GetTicks() + tickInterval;
@@ -53,6 +62,18 @@ void GameSession::run() {
 						s->rightButton();
 					}
 					break;
+				case SDLK_UP:
+					std::cout << "Up arrow pushed\n";
+					for (auto s : sprites) {
+						s->upButton();
+					}
+					break;
+				case SDLK_DOWN:
+					std::cout << "Down arrow pushed\n";
+					for (auto s : sprites) {
+						s->downButton();
+					}
+					break;
 				case SDLK_SPACE:
 					std::cout << "Spacebar pushed\n";
 					for (auto s : sprites) {
@@ -64,12 +85,16 @@ void GameSession::run() {
 		}//Innre While
 
 		for (auto s : sprites) {
-			s->tick(sprites);
+			s->tick(sprites);	
 		}
 		
 		for (auto s : missiles) {
-			s->tick(sprites);
+			score += (s->tick(sprites));
 		}
+
+		//for (auto s : shields) {
+		//	s->tick(sprites);
+		//}
 
 		//add sprites 
 		for (auto s : added) {
@@ -105,16 +130,35 @@ void GameSession::run() {
 				}
 		removedMissile.clear();
 
+		////add Shields
+		//for (auto s : addedShields) {
+		//	shields.push_back(s);
+		//}
+
+		//remove Shields
+		/*for (auto s : removedShields) {
+			for (auto i = shields.begin(); i != shields.end(); )
+				if (*i == s) {
+					i = shields.erase(i);
+				}
+				else {
+					i++;
+				}
+		}*/
+
 
 		SDL_SetRenderDrawColor(sys.ren, 0, 0, 0, 0);
 		SDL_RenderClear(sys.ren);
 		for (auto sprite : sprites) {
-			sprite->draw();
+			sprite->draw(score);
 		}
 
 		for (auto missile : missiles) {
-			missile->draw();
+			missile->draw(score);
 		}
+		/*for (auto shield : shields) {
+			shield->draw();
+		}*/
 
 		SDL_RenderPresent(sys.ren);
 

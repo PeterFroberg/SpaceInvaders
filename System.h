@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 
 class System
 {
@@ -12,6 +13,7 @@ public:
 
 	SDL_Window* win;
 	SDL_Renderer* ren;
+	TTF_Font* font;
 	
 };
 
