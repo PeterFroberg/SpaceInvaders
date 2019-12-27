@@ -14,15 +14,86 @@
 
 using namespace std;
 
+//class AlienBomb;
+class Ship;
+class Shield;
+
 GameSession gameSession;
+
+class AlienBomb : public Sprite, public enable_shared_from_this<AlienBomb> {
+public:
+	static shared_ptr<AlienBomb> getInstance(int x, int y, std::string image) {
+		return shared_ptr<AlienBomb>(new AlienBomb(x, y, image));
+	}
+
+	AlienBomb(int x, int y, std::string image) : Sprite(x, y, 5, 20, image) {
+		alienBombTexture = IMG_LoadTexture(sys.ren, image.c_str());
+		alienBombHit = Mix_LoadWAV("explosion.wav");
+	}
+
+	void draw(int score) {
+		SDL_RenderCopy(sys.ren, alienBombTexture, NULL, &getRect());
+	}
+
+	int tick(const std::vector<std::shared_ptr<Sprite>>& sprites) {
+
+		if (rect.y >= 690) {
+			gameSession.remove(shared_from_this());
+		}
+		else
+		{
+			rect.y += 3;
+		}
+		for (std::shared_ptr<Sprite> s : sprites) {  //Kontrollera missilträffar	
+			std::shared_ptr<Ship> ship;
+			std::shared_ptr<Shield> sh;
+
+			if ((ship = dynamic_pointer_cast<Ship> (s)) || (sh = dynamic_pointer_cast<Shield> (s))) {
+				if (checkCollision(s)) {
+					gameSession.remove(shared_from_this());
+					if (ship) {
+						gameSession.remove(s);
+						return 1; //end game
+					}
+					if (s->hit() == -1) {
+						gameSession.remove(s);
+					}
+
+				}
+			}
+		}
+
+		return 0;
+	}
+	bool checkCollision(std::shared_ptr<Sprite> s) {
+		if (rect.x + rect.w < s->getRect().x ||
+			rect.x > s->getRect().x + s->getRect().w ||
+			rect.y + rect.h < s->getRect().y ||
+			rect.y > s->getRect().y + s->getRect().h)
+		{
+			return false;
+		}
+		Mix_PlayChannel(-1, alienBombHit, 0);
+		return true;
+	}
+
+	~AlienBomb() {
+		SDL_DestroyTexture(alienBombTexture);
+	}
+private:
+	SDL_Texture* alienBombTexture;
+	Mix_Chunk* alienBombHit;
+
+};
 
 class Alien : public Sprite {
 public:
-	static shared_ptr<Alien> getInstance(int x, int y, std::string image) {
-		return shared_ptr<Alien>(new Alien(x, y, image));
+	static shared_ptr<Alien> getInstance(int x, int y, std::string image, int hitScore = 0) {
+		return shared_ptr<Alien>(new Alien(x, y, image, hitScore));
 	}
-	Alien(int x, int y, std::string image) : Sprite(x, y, 30, 30, image) {
+	Alien(int x, int y, std::string image, int hS) : Sprite(x, y, 30, 30, image) {
 		alienTexture = IMG_LoadTexture(sys.ren, image.c_str());
+		hitScore = hS;
 	}
 	void draw(int score) {
 		SDL_RenderCopy(sys.ren, alienTexture, NULL, &getRect());
@@ -42,16 +113,20 @@ public:
 				movingRight = true;
 			}
 		}
+
+		if ((rand() % 30000) < 10) {
+			gameSession.add(AlienBomb::getInstance(rect.x, rect.y, "bomb.png"));
+		}
 		return 0;
 	}
 	int hit() {
-		return -1;
+		return hitScore;
 	}
 
 private:
 	SDL_Texture* alienTexture;
 	bool movingRight = true;
-	int pos = 0;
+	int pos = 0, hitScore;
 };
 
 class Shield : public Sprite {
@@ -87,6 +162,8 @@ private:
 	std::vector<std::string> shield_images = { "space-invaders-galaxian1.png" , "space-invaders_galaxian2.png", "space-invaders_galaxian3.png", "space-invaders-galaxian4.png", "space-invaders-galaxian4.png" };
 };
 
+
+
 class Missile : public Sprite, public enable_shared_from_this<Missile> {
 public:
 	static shared_ptr<Missile> getInstance(int x, std::string image) {
@@ -95,7 +172,7 @@ public:
 
 	Missile(int x, std::string image) : Sprite(x, 630, 5, 20, image) {
 		texture = IMG_LoadTexture(sys.ren, image.c_str());
-		missileHit = Mix_LoadWAV("explosion.wav");
+		missileHit = Mix_LoadWAV("invaderkilled.wav");
 	}
 
 	void draw(int score) {
@@ -110,9 +187,8 @@ public:
 		{
 			rect.y -= 4;
 		}
-		//for (auto s : sprites) {   //Kontrollera krockar	
-		for (std::shared_ptr<Sprite> s : sprites) {
-			//KOlla om det är en aliens ska implemnenteras
+
+		for (std::shared_ptr<Sprite> s : sprites) {  //Kontrollera missilträffar	
 			std::shared_ptr<Alien> a;
 			std::shared_ptr<Shield> sh;
 			if ((a = dynamic_pointer_cast<Alien> (s)) || (sh = dynamic_pointer_cast<Shield> (s))) {
@@ -120,7 +196,7 @@ public:
 					gameSession.removeMissile(shared_from_this());
 					if (a) {
 						gameSession.remove(s);
-						return 20;
+						return s->hit();
 					}
 					if (s->hit() == -1) {
 						gameSession.remove(s);
@@ -224,6 +300,7 @@ public:
 			Mix_PlayChannel(-1, fireMissile, 0);
 		}
 	}
+	
 
 private:
 	SDL_Texture* shipTexture;
@@ -238,7 +315,7 @@ int main(int argc, char** argv) {
 	int row = 70;
 	for (int g = 0; g < 5; g++) {
 		for (int i = 0; i < 10; i++) {
-			gameSession.add(Alien::getInstance(col, row, galaxians_images[g]));
+			gameSession.add(Alien::getInstance(col, row, galaxians_images[g], (g+1) * 10));
 			col += 50;
 		}
 		col = 10;

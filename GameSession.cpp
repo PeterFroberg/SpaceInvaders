@@ -41,10 +41,10 @@ void GameSession::run() {
 	Uint32 tickInterval = 1000 / FPS;
 	score = 0;
 
-	while (!quit) {
+	while (!quit) {   //Yttre while
 		Uint32 nextTick = SDL_GetTicks() + tickInterval;
 		SDL_Event event;
-		while (SDL_PollEvent(&event)) {
+		while (SDL_PollEvent(&event)) {  //innre While
 			switch (event.type)
 			{
 			case SDL_QUIT: quit = true; break;
@@ -85,16 +85,15 @@ void GameSession::run() {
 		}//Innre While
 
 		for (auto s : sprites) {
-			s->tick(sprites);	
+			quit = s->tick(sprites);
+			if (quit) {
+				break;
+			}
 		}
 		
 		for (auto s : missiles) {
 			score += (s->tick(sprites));
 		}
-
-		//for (auto s : shields) {
-		//	s->tick(sprites);
-		//}
 
 		//add sprites 
 		for (auto s : added) {
@@ -130,23 +129,6 @@ void GameSession::run() {
 				}
 		removedMissile.clear();
 
-		////add Shields
-		//for (auto s : addedShields) {
-		//	shields.push_back(s);
-		//}
-
-		//remove Shields
-		/*for (auto s : removedShields) {
-			for (auto i = shields.begin(); i != shields.end(); )
-				if (*i == s) {
-					i = shields.erase(i);
-				}
-				else {
-					i++;
-				}
-		}*/
-
-
 		SDL_SetRenderDrawColor(sys.ren, 0, 0, 0, 0);
 		SDL_RenderClear(sys.ren);
 		for (auto sprite : sprites) {
@@ -156,10 +138,7 @@ void GameSession::run() {
 		for (auto missile : missiles) {
 			missile->draw(score);
 		}
-		/*for (auto shield : shields) {
-			shield->draw();
-		}*/
-
+		
 		SDL_RenderPresent(sys.ren);
 
 		int delay = nextTick - SDL_GetTicks();
