@@ -21,6 +21,7 @@ System::~System() {
 	TTF_Quit;
 
 	Mix_CloseAudio();
+	
 	SDL_Quit();
 }
 

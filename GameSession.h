@@ -14,9 +14,7 @@ public:
 	void removeMissile(std::shared_ptr<Sprite> sprite);
 	void remove(std::shared_ptr<Sprite> sprite);
 	void removeShield(std::shared_ptr<Sprite> sprite);
-	void run();
-
-	
+	void run(int fps);
 
 protected:
 

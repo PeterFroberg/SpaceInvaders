@@ -16,6 +16,7 @@ public:
 	virtual void downButton() {}
 	virtual void draw(int score) = 0;
 	SDL_Rect getRect() const { return rect; }
+	SDL_Rect setRect(int x, int y, int w, int h) {rect.x = x, rect.y = y, rect.w = w; rect.h = h; return rect; }
 	virtual int tick(const std::vector<std::shared_ptr<Sprite>>& sprites) = 0;
 	virtual int hit() { return -1; }
 	virtual ~Sprite() {}
@@ -25,8 +26,8 @@ protected:
 	SDL_Rect rect;
 
 private:
-	Sprite(const Sprite& other) = delete;
-	const Sprite& operator = (const Sprite& other) = delete;
+	Sprite(const Sprite& other) = delete; //tar bort copy-constructor
+	const Sprite& operator = (const Sprite& other) = delete;   //tar bort 
 };
 
 #endif

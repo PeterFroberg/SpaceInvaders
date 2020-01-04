@@ -8,8 +8,6 @@
 
 #include <iostream> //Only for debbuging ska tas bort
 
-#define FPS 60;
-
 void GameSession::add(std::shared_ptr<Sprite> sprite) {
 	added.push_back(sprite);
 }
@@ -36,9 +34,10 @@ void GameSession::removeShield(std::shared_ptr<Sprite> sprite) {
 	removedShields.push_back(sprite);
 }
 
-void GameSession::run() {
+void GameSession::run(int fps) {
 	bool quit = false;
-	Uint32 tickInterval = 1000 / FPS;
+	int numberOfAliensLeft = 0;
+	Uint32 tickInterval = 1000 / fps;
 	score = 0;
 
 	while (!quit) {   //Yttre while
@@ -51,31 +50,26 @@ void GameSession::run() {
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
 				case SDLK_LEFT:
-					std::cout << "Left arrow pushed\n";
 					for (auto s : sprites) {
 						s->leftButton();
 					}
 					break;
 				case SDLK_RIGHT:
-					std::cout << "Right arrow pushed\n";
 					for (auto s : sprites) {
 						s->rightButton();
 					}
 					break;
 				case SDLK_UP:
-					std::cout << "Up arrow pushed\n";
 					for (auto s : sprites) {
 						s->upButton();
 					}
 					break;
 				case SDLK_DOWN:
-					std::cout << "Down arrow pushed\n";
 					for (auto s : sprites) {
 						s->downButton();
 					}
 					break;
 				case SDLK_SPACE:
-					std::cout << "Spacebar pushed\n";
 					for (auto s : sprites) {
 						s->spaceBar(missiles.size());
 					}
@@ -84,22 +78,26 @@ void GameSession::run() {
 			}//switch event.type
 		}//Innre While
 
+		//add sprites 
+		for (auto s : added) {
+			sprites.push_back(s);
+		}
+		added.clear();
+
+		numberOfAliensLeft = 0;
 		for (auto s : sprites) {
-			quit = s->tick(sprites);
-			if (quit) {
-				break;
-			}
+			numberOfAliensLeft += s->tick(sprites);		
+		}
+		if (numberOfAliensLeft == 0 || numberOfAliensLeft >= 999) {
+			quit = true;
+			break;
 		}
 		
 		for (auto s : missiles) {
 			score += (s->tick(sprites));
 		}
 
-		//add sprites 
-		for (auto s : added) {
-			sprites.push_back(s);
-		}
-		added.clear();
+		
 
 		//remove sprites
 		for (auto s : removed)
@@ -145,4 +143,5 @@ void GameSession::run() {
 		if (delay > 0)
 			SDL_Delay(delay);
 	}//Yttre run loop
+	
 }
