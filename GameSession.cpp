@@ -3,29 +3,27 @@
 
 #include <iostream> //Only for debbuging ska tas bort
 
-void GameSession::add(std::shared_ptr<Sprite> sprite) {
+void GameSession::add(shared_ptr<Sprite> sprite) {
 	added.push_back(sprite);
 }
 
-void GameSession::remove(std::shared_ptr<Sprite> sprite) {
+void GameSession::remove(shared_ptr<Sprite> sprite) {
 	removed.push_back(sprite);
 }
 
-void GameSession::addMissile(std::shared_ptr<Sprite> sprite){ //, const int maxNoMissiles) {
-	//if (missiles.size() < maxNoMissiles) {
+void GameSession::addMissile(shared_ptr<Sprite> sprite){ 
 		addedMissile.push_back(sprite);
-	//}
 }
 
-void GameSession::removeMissile(std::shared_ptr<Sprite> sprite) {
+void GameSession::removeMissile(shared_ptr<Sprite> sprite) {
 	removedMissile.push_back(sprite);
 }
 
-void GameSession::addShield(std::shared_ptr<Sprite> sprite) {
+void GameSession::addShield(shared_ptr<Sprite> sprite) {
 	addedShields.push_back(sprite);
 }
 
-void GameSession::removeShield(std::shared_ptr<Sprite> sprite) {
+void GameSession::removeShield(shared_ptr<Sprite> sprite) {
 	removedShields.push_back(sprite);
 }
 
@@ -44,33 +42,14 @@ void GameSession::run(int fps, GameSession* gameSession) {
 			{
 			case SDL_QUIT: quit = true; break;
 			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym) {
-				case SDLK_LEFT:
-					for (auto s : sprites) {
-						s->leftButton();
-					}
-					break;
-				case SDLK_RIGHT:
-					for (auto s : sprites) {
-						s->rightButton();
-					}
-					break;
-				case SDLK_UP:
-					for (auto s : sprites) {
-						s->upButton();
-					}
-					break;
-				case SDLK_DOWN:
-					for (auto s : sprites) {
-						s->downButton();
-					}
-					break;
-				case SDLK_SPACE:
-					for (auto s : sprites) {
-						s->spaceBar(missiles.size(),gameSession);
-					}
-					break;
-				}//switch event.key.keysym.sym
+				for (auto s : sprites) {
+					s->keyDown(event.key.keysym.sym, missiles.size(), gameSession);
+				}
+				break;
+			case SDL_KEYUP:
+				for (auto s : sprites) {
+					s->keyUp(event.key.keysym.sym, missiles.size(), gameSession);
+				}
 			}//switch event.type
 		}//Innre While
 
@@ -92,8 +71,6 @@ void GameSession::run(int fps, GameSession* gameSession) {
 		for (auto s : missiles) {
 			score += (s->tick(sprites, gameSession));
 		}
-
-		
 
 		//remove sprites
 		for (auto s : removed)

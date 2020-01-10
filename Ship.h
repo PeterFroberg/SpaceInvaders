@@ -16,6 +16,7 @@ public:
 	static shared_ptr<Ship> getInstance(std::string image);
 	int tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSession* gameSession);
 	void draw(int score);
+	void keyDown(SDL_Keycode k, int numberOfMissiles, GameSession* gameSession);
 	void leftButton();
 	void rightButton();
 	void spaceBar(int numberOfMissiles, GameSession* gameSession);

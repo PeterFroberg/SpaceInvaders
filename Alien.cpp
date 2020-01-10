@@ -1,13 +1,13 @@
 #include "Alien.h"
 
-shared_ptr<Alien> Alien::getInstance(int x, int y, std::string image, int hitScore ) {
+shared_ptr<Alien> Alien::getInstance(int x, int y, string image, int hitScore) {
 	return shared_ptr<Alien>(new Alien(x, y, image, hitScore));
 }
 
 void Alien::draw(int score) {
 	SDL_RenderCopy(sys.ren, alienTexture, NULL, &getRect());
 }
-int Alien::tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSession* gameSession) {
+int Alien::tick(const vector<shared_ptr<Sprite>>& sprites, GameSession* gameSession) {
 	if (movingRight && pos < 200) {
 		rect.x++;
 		pos++;
@@ -35,7 +35,7 @@ int Alien::hit() {
 Alien::~Alien() {
 	SDL_DestroyTexture(alienTexture);
 }
-Alien::Alien(int x, int y, std::string image, int hS) : Sprite(x, y, 30, 30, image) {
+Alien::Alien(int x, int y, string image, int hS) : Sprite(x, y, 30, 30, image) {
 	alienTexture = IMG_LoadTexture(sys.ren, image.c_str());
 	hitScore = hS;
 }

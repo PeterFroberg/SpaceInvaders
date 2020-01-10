@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-
 using namespace std;
 
 class Alien : public Sprite
@@ -23,7 +22,6 @@ public:
 	int hit();
 
 	~Alien();
-	
 
 private:
 	Alien(int x, int y, std::string image, int hS);

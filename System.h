@@ -14,7 +14,7 @@ public:
 	SDL_Window* win;
 	SDL_Renderer* ren;
 	TTF_Font* font;
-	
+
 };
 
 extern System sys;

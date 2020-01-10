@@ -5,22 +5,21 @@
 #include <SDL.h>
 #include <vector>
 #include <memory>
-//#include "GameSession.h"
 
 class GameSession;
 
 class Sprite
 {
 public:
+	virtual void keyDown(SDL_Keycode k, int numberOfMissiles, GameSession* gameSession) {}
+	virtual void keyUp(SDL_Keycode k, int numberOfMissiles, GameSession* gameSession) {}
 	virtual void spaceBar(int nuberOfMissiles, GameSession* gameSession) {}
 	virtual void leftButton() {}
 	virtual void rightButton() {}
-	virtual void upButton() {}
-	virtual void downButton() {}
 	virtual void draw(int score) = 0;
 	SDL_Rect getRect() const { return rect; }
-	SDL_Rect setRect(int x, int y, int w, int h) {rect.x = x, rect.y = y, rect.w = w; rect.h = h; return rect; }
-	virtual int tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSession* gameSession ) = 0;
+	SDL_Rect setRect(int x, int y, int w, int h) { rect.x = x, rect.y = y, rect.w = w; rect.h = h; return rect; }
+	virtual int tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSession* gameSession) = 0;
 	virtual int hit() { return -1; }
 	virtual ~Sprite() {}
 

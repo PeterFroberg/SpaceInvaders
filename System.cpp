@@ -8,9 +8,9 @@ System::System() {
 	ren = SDL_CreateRenderer(win, -1, 0);
 
 	font = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 24);
-	
+
 	Mix_OpenAudio(20050, AUDIO_S16SYS, 2, 4096);
-	
+
 }
 
 System::~System() {
@@ -21,7 +21,7 @@ System::~System() {
 	TTF_Quit;
 
 	Mix_CloseAudio();
-	
+
 	SDL_Quit();
 }
 

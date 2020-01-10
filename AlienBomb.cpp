@@ -2,7 +2,7 @@
 
 Mix_Chunk* AlienBomb::alienBombHit;
 
-shared_ptr<AlienBomb> AlienBomb::getInstance(int x, int y, std::string image) {
+shared_ptr<AlienBomb> AlienBomb::getInstance(int x, int y, string image) {
 	return shared_ptr<AlienBomb>(new AlienBomb(x, y, image));
 }
 
@@ -14,7 +14,7 @@ void AlienBomb::draw(int score) {
 	SDL_RenderCopy(sys.ren, alienBombTexture, NULL, &getRect());
 }
 
-int AlienBomb::tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSession* gameSession) {
+int AlienBomb::tick(const vector<shared_ptr<Sprite>>& sprites, GameSession* gameSession) {
 
 	if (rect.y >= 690) {
 		gameSession->remove(shared_from_this());
@@ -23,9 +23,9 @@ int AlienBomb::tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSes
 	{
 		rect.y += 3;
 	}
-	for (std::shared_ptr<Sprite> s : sprites) {  //Kontrollera missilträffar	
-		std::shared_ptr<Ship> ship;
-		std::shared_ptr<Shield> sh;
+	for (shared_ptr<Sprite> s : sprites) {  //Kontrollera missilträffar	
+		shared_ptr<Ship> ship;
+		shared_ptr<Shield> sh;
 
 		if ((ship = dynamic_pointer_cast<Ship> (s)) || (sh = dynamic_pointer_cast<Shield> (s))) {
 			if (checkCollision(s)) {
@@ -45,19 +45,16 @@ int AlienBomb::tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSes
 	return 0;
 }
 
-
-
 AlienBomb::~AlienBomb() {
 	SDL_DestroyTexture(alienBombTexture);
-	//Mix_FreeChunk(alienBombHit);
 }
 
-AlienBomb::AlienBomb(int x, int y, std::string image) : Sprite(x, y, 5, 20, image) {
+AlienBomb::AlienBomb(int x, int y, string image) : Sprite(x, y, 5, 20, image) {
 	alienBombTexture = IMG_LoadTexture(sys.ren, image.c_str());
 	alienBombHit = Mix_LoadWAV("explosion.wav");
 }
 
-bool AlienBomb::checkCollision(std::shared_ptr<Sprite> s) {
+bool AlienBomb::checkCollision(shared_ptr<Sprite> s) {
 	if (rect.x + rect.w < s->getRect().x ||
 		rect.x > s->getRect().x + s->getRect().w ||
 		rect.y + rect.h < s->getRect().y ||

@@ -21,7 +21,7 @@ public:
 	static void freeAlienChunk();
 	void draw(int score);
 	int tick(const std::vector<std::shared_ptr<Sprite>>& sprites, GameSession* gameSession);
-	
+
 	bool checkCollision(std::shared_ptr<Sprite> s);
 
 	~AlienBomb();

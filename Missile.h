@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class Missile :	public Sprite, public enable_shared_from_this<Missile>
+class Missile : public Sprite, public enable_shared_from_this<Missile>
 {
 public:
 	static shared_ptr<Missile> getInstance(int x, int y, std::string image);

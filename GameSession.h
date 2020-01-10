@@ -7,12 +7,13 @@
 #include "System.h"
 #include <typeinfo>
 
+using namespace std;
 
 class GameSession
 {
 public:
 	void add(std::shared_ptr<Sprite> sprite);
-	void addMissile(std::shared_ptr<Sprite> sprite); // , const int maxNoMissiles);
+	void addMissile(std::shared_ptr<Sprite> sprite);
 	void addShield(std::shared_ptr<Sprite> sprite);
 	void removeMissile(std::shared_ptr<Sprite> sprite);
 	void remove(std::shared_ptr<Sprite> sprite);
@@ -23,7 +24,7 @@ protected:
 
 private:
 	int score;
-	std::vector<std::shared_ptr<Sprite>> sprites, missiles, shields, added, removed, addedMissile, removedMissile, addedShields, removedShields;	
+	std::vector<std::shared_ptr<Sprite>> sprites, missiles, shields, added, removed, addedMissile, removedMissile, addedShields, removedShields;
 };
 
 #endif
