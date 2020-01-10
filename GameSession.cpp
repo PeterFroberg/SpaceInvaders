@@ -1,10 +1,5 @@
 #include "GameSession.h"
 #include <SDL.h>
-#include "System.h"
-#include "Sprite.h"
-#include <vector>
-#include <memory>
-#include <typeinfo>
 
 #include <iostream> //Only for debbuging ska tas bort
 
@@ -16,10 +11,10 @@ void GameSession::remove(std::shared_ptr<Sprite> sprite) {
 	removed.push_back(sprite);
 }
 
-void GameSession::addMissile(std::shared_ptr<Sprite> sprite, const int maxNoMissiles) {
-	if (missiles.size() < maxNoMissiles) {
+void GameSession::addMissile(std::shared_ptr<Sprite> sprite){ //, const int maxNoMissiles) {
+	//if (missiles.size() < maxNoMissiles) {
 		addedMissile.push_back(sprite);
-	}
+	//}
 }
 
 void GameSession::removeMissile(std::shared_ptr<Sprite> sprite) {
@@ -34,7 +29,8 @@ void GameSession::removeShield(std::shared_ptr<Sprite> sprite) {
 	removedShields.push_back(sprite);
 }
 
-void GameSession::run(int fps) {
+void GameSession::run(int fps, GameSession* gameSession) {
+	score = 0;
 	bool quit = false;
 	int numberOfAliensLeft = 0;
 	Uint32 tickInterval = 1000 / fps;
@@ -71,7 +67,7 @@ void GameSession::run(int fps) {
 					break;
 				case SDLK_SPACE:
 					for (auto s : sprites) {
-						s->spaceBar(missiles.size());
+						s->spaceBar(missiles.size(),gameSession);
 					}
 					break;
 				}//switch event.key.keysym.sym
@@ -86,7 +82,7 @@ void GameSession::run(int fps) {
 
 		numberOfAliensLeft = 0;
 		for (auto s : sprites) {
-			numberOfAliensLeft += s->tick(sprites);		
+			numberOfAliensLeft += s->tick(sprites,gameSession);		
 		}
 		if (numberOfAliensLeft == 0 || numberOfAliensLeft >= 999) {
 			quit = true;
@@ -94,7 +90,7 @@ void GameSession::run(int fps) {
 		}
 		
 		for (auto s : missiles) {
-			score += (s->tick(sprites));
+			score += (s->tick(sprites, gameSession));
 		}
 
 		
