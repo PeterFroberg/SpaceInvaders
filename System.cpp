@@ -7,7 +7,7 @@ System::System() {
 	win = SDL_CreateWindow("Game", 20, 20, 700, 700, 0);
 	ren = SDL_CreateRenderer(win, -1, 0);
 
-	font = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 24);
+	font = TTF_OpenFont("arial.ttf", 24);
 
 	Mix_OpenAudio(20050, AUDIO_S16SYS, 2, 4096);
 
